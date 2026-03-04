@@ -133,9 +133,10 @@
         }
 
         .title-slide .subtitle {
+            font-family: var(--font-display);
             font-size: var(--h3-size);
             color: var(--tx-secondary);
-            font-weight: 300;
+            font-weight: 400;
             letter-spacing: 0.02em;
             max-width: 75%;
         }
@@ -147,7 +148,7 @@
             text-transform: uppercase;
         }
 
-        /* Section dividers - number + title */
+        /* Section dividers - number + title + context line */
         .section-slide .slide-content {
             align-items: flex-start;
             justify-content: flex-end;
@@ -156,7 +157,7 @@
 
         .section-number {
             font-size: clamp(4rem, 12vw, 10rem);
-            font-weight: 300;
+            font-weight: 400;
             color: var(--bg-900);
             line-height: 1;
             letter-spacing: -0.02em;
@@ -169,6 +170,15 @@
             color: var(--gold);
             letter-spacing: 0.04em;
             margin-top: clamp(0.5rem, 1vh, 1rem);
+        }
+
+        .section-context {
+            font-size: var(--small-size);
+            color: var(--tx-muted);
+            margin-top: clamp(0.3rem, 0.8vh, 0.6rem);
+            font-style: italic;
+            font-family: var(--font-serif);
+            letter-spacing: 0.01em;
         }
 
         /* Content slides */
@@ -405,13 +415,13 @@
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             z-index: 100;
         }
 
         .nav-dot {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
             background: var(--bg-850);
             cursor: pointer;
@@ -430,8 +440,8 @@
         }
 
         .nav-dot.section-marker {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
         }
 
         /* Keyboard hint */
@@ -549,19 +559,22 @@
 
     <!-- ===========================================
          SLIDE 3: THE QUESTION
+         Enhanced: expanded gluon scattering detail
          =========================================== -->
     <section class="slide content-slide">
         <span class="ghost" style="bottom: -5%; right: -3%;">?</span>
         <div class="slide-content">
             <h2 class="reveal">The Question</h2>
-            <p class="reveal">In 2026, humanity can actually ask machines philosophical questions. AI has had breakthroughs across domains&mdash;protein folding, quantum error correction, gluon scattering amplitudes.</p>
-            <p class="reveal">But philosophy does not have uncontroversial success conditions. What counts as a <span class="term">contribution</span> depends on what philosophy <em>is</em>.</p>
+            <p class="reveal">In 2026, humanity can actually ask machines philosophical questions. AI has had breakthroughs across domains&mdash;protein folding (2024 Nobel), quantum error correction, new symmetries in black hole equations.</p>
+            <p class="reveal">In February 2026, GPT-5.2 was given worked examples for 3, 4, 5, and 6 particles in gluon scattering. It conjectured the general formula, completed a formal proof, and <span class="term">overturned a forty-year-old assumption</span>.</p>
+            <p class="reveal muted">But philosophy does not have uncontroversial success conditions. What counts as a contribution depends on what philosophy <em>is</em>.</p>
         </div>
     </section>
 
 
     <!-- ===========================================
          SLIDE 4: TWO CONCEPTIONS
+         Enhanced: analytic/continental aside in muted text
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -570,20 +583,21 @@
                 <div class="split-left card">
                     <span class="split-label accent-gold">Text-Focused</span>
                     <p>Philosophy is located in <em>texts</em>. A contribution is a text exhibiting certain properties: coherence, explanatory power, integration.</p>
-                    <p class="muted" style="font-size: var(--small-size);">Dellsen et al. &middot; Bengson et al. &middot; Williamson</p>
+                    <p class="muted" style="font-size: var(--small-size);">Dells&eacute;n et al. &middot; Bengson et al. &middot; Williamson</p>
                 </div>
                 <div class="split-right card">
                     <span class="split-label accent-red">Practitioner-Focused</span>
                     <p>Philosophy is located in the <em>practitioner</em>. It requires self-transformation, therapy, or phenomenological observation.</p>
-                    <p class="muted" style="font-size: var(--small-size);">Hadot &middot; Wittgenstein &middot; Merleau-Ponty</p>
+                    <p class="muted" style="font-size: var(--small-size);">Hadot &middot; Wittgenstein &middot; Merleau-Ponty &middot; Nietzsche</p>
                 </div>
             </div>
+            <p class="reveal muted" style="font-size: var(--small-size); margin-top: auto;">This maps imperfectly but suggestively onto the analytic/continental divide.</p>
         </div>
     </section>
 
 
     <!-- ===========================================
-         SLIDE 5: THIS PAPER
+         SLIDE 5: THIS PAPER'S FRAMEWORK
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -597,17 +611,20 @@
 
     <!-- ===========================================
          SLIDE 6: SECTION 1 DIVIDER
+         Enhanced: context line
          =========================================== -->
     <section class="slide section-slide" data-section="true">
         <div class="slide-content">
             <span class="section-number reveal">1</span>
             <h2 class="section-title reveal">Philosophy in the Text</h2>
+            <p class="section-context reveal">What are we evaluating when we evaluate philosophy?</p>
         </div>
     </section>
 
 
     <!-- ===========================================
          SLIDE 7: WATSON & CRICK VS QUINE
+         Enhanced: Rosalind Franklin counterfactual
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -615,14 +632,13 @@
             <div class="split-content reveal" style="transition-delay: 0.3s;">
                 <div class="split-left">
                     <span class="split-label accent-teal">Watson &amp; Crick (1953)</span>
-                    <p>Reported a finding. The double helix existed before they described it. A different scientist would have found the <em>same thing</em>.</p>
+                    <p>Reported a finding. The double helix existed before they described it. Had <em>Rosalind Franklin</em> announced it first, the finding would have been the same&mdash;the same arrangement, the same base pairings&mdash;just differently attributed.</p>
                 </div>
                 <div class="split-right">
                     <span class="split-label accent-teal">Quine (1951)</span>
-                    <p>Made arguments. There is no prior reality the paper reports. A different philosopher reaching the same conclusions would have had to <em>make arguments</em>.</p>
+                    <p>Made arguments. There is no prior reality the paper reports. A different philosopher reaching the same conclusions would have had to <em>make arguments</em>. If the arguments differed, so would the contribution.</p>
                 </div>
             </div>
-            <p class="reveal muted" style="margin-top: auto; font-size: var(--small-size);">If the arguments differed, so would the contribution.</p>
         </div>
     </section>
 
@@ -640,7 +656,34 @@
 
 
     <!-- ===========================================
-         SLIDE 9: WHAT WE EVALUATE
+         SLIDE 9: SEMMELWEIS — NEW
+         Concrete illustration of loveliness vs likeliness
+         =========================================== -->
+    <section class="slide content-slide">
+        <span class="ghost" style="top: 5%; left: -3%;">&dagger;</span>
+        <div class="slide-content">
+            <h2 class="reveal">Semmelweis</h2>
+            <p class="reveal">Why did women in the First Division of the Vienna maternity hospital die at higher rates than those in the Second? Three candidate explanations:</p>
+            <div class="split-content reveal" style="transition-delay: 0.3s;">
+                <div class="split-left card">
+                    <span class="split-label accent-teal">Cadaveric Matter</span>
+                    <p>Unifies with known facts about infection. If true, it <em>explains</em> the phenomenon.</p>
+                    <p class="muted" style="font-size: var(--small-size); margin-top: auto;">Lovelier &mdash; illuminating</p>
+                </div>
+                <div class="split-right card">
+                    <span class="split-label accent-red">The Priest&rsquo;s Route</span>
+                    <p>Even if true, leaves it mysterious <em>why</em> the priest&rsquo;s presence caused death.</p>
+                    <p class="muted" style="font-size: var(--small-size); margin-top: auto;">Less lovely &mdash; opaque</p>
+                </div>
+            </div>
+            <p class="reveal muted" style="font-size: var(--small-size); margin-top: auto;">Loveliness assessable before knowing which explanation is correct.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 10: WHAT WE EVALUATE
+         Enhanced: overfitting analogy added
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -651,18 +694,36 @@
                 <li><span class="highlight">Handling of objections</span>&mdash;distinctions drawn at the right places</li>
                 <li><span class="highlight">Illumination</span>&mdash;does it deepen understanding of the subject matter?</li>
             </ul>
-            <p class="reveal muted" style="font-size: var(--small-size); margin-top: auto;">Blind review operationalises this: referees assess arguments without knowing who wrote them.</p>
+            <p class="reveal muted" style="font-size: var(--small-size); margin-top: auto;">Williamson compares the philosophical cycle of analysis, counterexample, and revised analysis to <span class="accent-teal">overfitting in statistics</span>. Each repair risks making the theory more ad hoc.</p>
         </div>
     </section>
 
 
     <!-- ===========================================
-         SLIDE 10: THE KEY MOVE
+         SLIDE 11: DELLSÉN'S DYING SCIENTIST — NEW
+         Text-focused view made vivid
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Progress Without Comprehension</h2>
+            <h3 class="reveal">Dells&eacute;n, Firing, Lawler &amp; Norton (2024)</h3>
+            <p class="reveal">Suppose a scientist publishes an important finding and then dies. Everyone who read the paper also dies, or forgets what they read. Has the progress been lost?</p>
+            <p class="reveal"><span class="term">No.</span> Progress occurred when the publication made it possible for someone to understand&mdash;whether or not anyone actually did. The materials remain publicly available; that is what matters.</p>
+            <div class="hr reveal"></div>
+            <p class="reveal muted" style="font-size: var(--small-size);">Blind review operationalises this: referees assess arguments without knowing who wrote them.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 12: THE KEY MOVE (DEEP BLUE)
+         Enhanced: Gaut attribution
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
             <blockquote class="reveal">
                 Deep Blue plays good chess. Its moves respond effectively to threats, secure positional advantages, and contribute to coherent strategic plans. But Deep Blue does not play creatively. A move is good chess or it is not, regardless of whether it was found by creative insight or brute computation.
+                <span class="attribution">cf. Gaut on creativity and domain-specific excellence</span>
             </blockquote>
             <div class="hr reveal"></div>
             <p class="reveal">If evaluation concerns <span class="term">properties of arguments</span>, the production process is not evaluatively relevant.</p>
@@ -671,18 +732,20 @@
 
 
     <!-- ===========================================
-         SLIDE 11: SECTION 2 DIVIDER
+         SLIDE 13: SECTION 2 DIVIDER
+         Enhanced: context line
          =========================================== -->
     <section class="slide section-slide" data-section="true">
         <div class="slide-content">
             <span class="section-number reveal">2</span>
             <h2 class="section-title reveal">LLMs and Abduction</h2>
+            <p class="section-context reveal">Two objections to LLM philosophy</p>
         </div>
     </section>
 
 
     <!-- ===========================================
-         SLIDE 12: ZEROTH-ORDER ABDUCTION
+         SLIDE 14: ZEROTH-ORDER ABDUCTION
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -698,47 +761,98 @@
 
 
     <!-- ===========================================
-         SLIDE 13: ZAHAVY'S OBJECTION
+         SLIDE 15: FLORIDI ET AL.'S CONCESSION — NEW
+         The opposition's own crack in the argument
          =========================================== -->
-    <section class="slide content-slide">
+    <section class="slide quote-slide">
         <div class="slide-content">
-            <h2 class="reveal">Manipulative Abduction</h2>
-            <h3 class="reveal">Zahavy (2026)</h3>
-            <p class="reveal">Einstein imagined himself inside a falling elevator. He simulated the <em>sensations</em>&mdash;objects hovering, the floor rushing up&mdash;and abduced that gravity and acceleration must be the same phenomenon.</p>
-            <p class="reveal">LLMs operate entirely in symbols&mdash;<span class="accent-red">"high-dimensional Chinese Rooms."</span> But the argument extends beyond physics: if LLMs lack subjective experience altogether, then philosophy relying on <span class="term">phenomenological observation</span>, <span class="term">intuitions</span> (Machery 2017), or <span class="term">aesthetic experience</span> is also at risk.</p>
+            <blockquote class="reveal">
+                "If an AI can generate the same explanatory hypothesis a human would, does it matter that the process was different? From an epistemological standpoint, perhaps yes&mdash;justification is significant&mdash;but regarding the content of the hypothesis and our interpretation of it, maybe not."
+                <span class="attribution">Floridi, Nobre &amp; Taddeo (2024)</span>
+            </blockquote>
+            <div class="hr reveal"></div>
+            <p class="reveal" style="font-size: var(--body-size); text-align: center; color: var(--tx-secondary);">Mechanism matters for epistemology. But philosophical evaluation concerns <span class="accent-teal">content</span>.</p>
         </div>
     </section>
 
 
     <!-- ===========================================
-         SLIDE 14: SECTION 3 DIVIDER
+         SLIDE 16: ZAHAVY — EINSTEIN'S ELEVATOR
+         Split from original: now just the vivid case
+         =========================================== -->
+    <section class="slide content-slide">
+        <span class="ghost" style="bottom: -8%; right: -4%;">g</span>
+        <div class="slide-content">
+            <h2 class="reveal">The Falling Elevator</h2>
+            <h3 class="reveal">Zahavy (2026)</h3>
+            <p class="reveal">Einstein imagined himself inside a falling elevator. He simulated the <em>sensations</em>&mdash;objects released from the hand appearing to hover, the floor rushing up to meet falling things&mdash;and abduced that gravity and acceleration must be the same phenomenon.</p>
+            <p class="reveal">The thought experiment was not a logical exercise conducted in symbols but a <span class="term">sensory</span> one conducted in imagination. Zahavy calls this <span class="term">manipulative abduction</span>.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 17: ZAHAVY — EXTENSION TO PHILOSOPHY
+         Split from original: the broader threat
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">The Broader Threat</h2>
+            <p class="reveal">LLMs operate entirely in symbols&mdash;<span class="accent-red">"high-dimensional Chinese Rooms"</span> (Harnad)&mdash;manipulating the language of physics without access to the physical referents that give it meaning.</p>
+            <p class="reveal">Zahavy limits his argument to physics. But the structure extends: if LLMs lack subjective experience altogether, then philosophy relying on <span class="term">phenomenological observation</span>, <span class="term">intuitions</span> (Machery 2017), or <span class="term">aesthetic experience</span> is also at risk.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 18: SECTION 3 DIVIDER
+         Enhanced: context line
          =========================================== -->
     <section class="slide section-slide" data-section="true">
         <div class="slide-content">
             <span class="section-number reveal">3</span>
             <h2 class="section-title reveal">Thought Experiments &amp;<br>Armchair Abduction</h2>
+            <p class="section-context reveal">Why these objections do not apply to armchair philosophy</p>
         </div>
     </section>
 
 
     <!-- ===========================================
-         SLIDE 15: WILLIAMSON'S FRAMEWORK
+         SLIDE 19: WILLIAMSON'S INTRINSIC VIRTUES
+         Split from original: the quote alone
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
-            <h2 class="reveal">Armchair Abduction</h2>
+            <h2 class="reveal">Intrinsic Virtues</h2>
             <h3 class="reveal">Williamson (2024)</h3>
             <blockquote class="reveal">
                 "It should be elegant and unified, not arbitrary, gerrymandered, ad hoc, or messily complicated. It should be informative and general. In brief, it should combine simplicity with strength."
                 <span class="attribution">Williamson 2024, p. 354</span>
             </blockquote>
-            <p class="reveal">The evidence for philosophical abduction is the <span class="term">accumulated textual record</span> of the discipline. Mathematics is precedent: a successful armchair discipline where abduction operates.</p>
+            <p class="reveal muted" style="font-size: var(--small-size); margin-top: auto;">Theories ranked as potential explanations of a body of evidence. The ranking depends on fit <em>and</em> intrinsic virtues.</p>
         </div>
     </section>
 
 
     <!-- ===========================================
-         SLIDE 16: THE CORPUS ARGUMENT
+         SLIDE 20: UNRESTRICTED EVIDENCE BASE
+         Split from original: evidence + mathematics
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">The Evidence Base</h2>
+            <blockquote class="reveal" style="font-size: var(--small-size);">
+                "Nothing in this account requires the evidence propositions, the explananda, to be of some special kind. Any known truths will do."
+                <span class="attribution">Williamson 2024, p. 355</span>
+            </blockquote>
+            <p class="reveal">In philosophy, evidence consists in arguments, counterexamples, thought experiments, and the distinctions that prior inquiry has established&mdash;the <span class="term">accumulated textual record</span> of the discipline.</p>
+            <p class="reveal muted">Mathematics is precedent: a successful armchair discipline where abduction operates without empirical observation.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 21: THE CORPUS ARGUMENT
          =========================================== -->
     <section class="slide content-slide">
         <span class="ghost" style="top: 5%; right: -5%; opacity: 0.6;">P</span>
@@ -753,7 +867,7 @@
 
 
     <!-- ===========================================
-         SLIDE 17: TWIN EARTH
+         SLIDE 22: TWIN EARTH IS A TEXT
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -765,7 +879,7 @@
 
 
     <!-- ===========================================
-         SLIDE 18: DESCRIPTIONS, NOT EXPERIENCE
+         SLIDE 23: DESCRIPTIONS, NOT EXPERIENCE
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -777,7 +891,24 @@
 
 
     <!-- ===========================================
-         SLIDE 19: CONCEPTUAL INNOVATION
+         SLIDE 24: THE NOVELTY QUESTION — NEW
+         Setup for the conceptual innovation answer
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">The Novelty Question</h2>
+            <p class="reveal">Zahavy's argument, if it worked, would suggest that LLMs cannot produce <em>genuinely new</em> theories&mdash;that they are limited to recombining existing materials.</p>
+            <blockquote class="reveal" style="font-size: var(--small-size);">
+                "Enumerative induction is inadequate for systematic philosophical theorizing, which often requires introducing new distinctions at a more abstract level not given in the data."
+                <span class="attribution">Williamson 2024, p. 353</span>
+            </blockquote>
+            <p class="reveal">But what does philosophical novelty actually consist in?</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 25: CONCEPTUAL INNOVATION
          =========================================== -->
     <section class="slide content-slide">
         <div class="slide-content">
@@ -794,7 +925,7 @@
 
 
     <!-- ===========================================
-         SLIDE 19: LIPTON'S LEVELS
+         SLIDE 26: LIPTON'S LEVELS
          =========================================== -->
     <section class="slide quote-slide">
         <div class="slide-content">
@@ -809,7 +940,7 @@
 
 
     <!-- ===========================================
-         SLIDE 20: CONCLUSION
+         SLIDE 27: CONCLUSION
          =========================================== -->
     <section class="slide title-slide" data-section="true">
         <span class="ghost" style="bottom: -8%; left: -5%;">&#8756;</span>
