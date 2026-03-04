@@ -219,10 +219,16 @@
             padding-left: clamp(1rem, 2vw, 1.8rem);
             font-family: var(--font-body);
             font-size: var(--quote-size);
-            line-height: 1.7;
+            line-height: 1.5;
             color: var(--tx-primary);
             font-style: normal;
             opacity: 0.92;
+        }
+
+        blockquote br {
+            display: block;
+            content: "";
+            margin-top: 0.3em;
         }
 
         blockquote .attribution {
