@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making Art and Philosophy with AI</title>
+
+    <!-- Fonts: iA Writer Duospace (local system font from Nick's machine) -->
+    <!-- Fallback to IBM Plex Mono (Google Fonts) for portability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================================
+           VIEWPORT FITTING: MANDATORY BASE STYLES
+           =========================================== */
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding);
+        }
+
+        /* ===========================================
+           FLEXOKI DARK + iA WRITER DUOSPACE THEME
+           Mirroring Nick's Obsidian vault aesthetic
+           =========================================== */
+        :root {
+            /* Flexoki Dark palette */
+            --bg-black: #100F0F;
+            --bg-950: #1C1B1A;
+            --bg-900: #282726;
+            --bg-850: #343331;
+
+            --tx-primary: #CECDC3;
+            --tx-secondary: #878580;
+            --tx-muted: #575653;
+            --tx-faint: #6F6E69;
+
+            /* Polychromatic accent hierarchy */
+            --red: #AF3029;
+            --red-dark: #942822;
+            --gold: #DFB431;
+            --gold-dark: #AD8301;
+            --teal: #3AA99F;
+            --teal-light: #A2DECE;
+            --teal-dark: #24837B;
+            --teal-wash: rgba(58, 169, 159, 0.08);
+            --teal-wash-strong: rgba(58, 169, 159, 0.15);
+
+            /* Typography — iA Writer Duospace first, IBM Plex Mono fallback */
+            --font-display: 'iA Writer Duospace', 'IBM Plex Mono', monospace;
+            --font-body: 'iA Writer Duospace', 'IBM Plex Mono', monospace;
+            --font-serif: 'IBM Plex Serif', 'Georgia', serif;
+
+            /* Responsive sizing */
+            --title-size: clamp(2.2rem, 6.5vw, 5rem);
+            --h2-size: clamp(1.5rem, 4vw, 3rem);
+            --h3-size: clamp(1.2rem, 2.8vw, 2rem);
+            --body-size: clamp(0.95rem, 1.8vw, 1.35rem);
+            --small-size: clamp(0.8rem, 1.3vw, 1.05rem);
+            --quote-size: clamp(0.9rem, 1.6vw, 1.2rem);
+
+            /* Spacing */
+            --slide-padding: clamp(2rem, 6vw, 6rem);
+            --content-gap: clamp(0.5rem, 2vw, 2rem);
+
+            /* Animation */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration: 0.8s;
+        }
+
+        /* ===========================================
+           BASE STYLES
+           =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-black);
+            color: var(--tx-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===========================================
+           SLIDE TYPES
+           =========================================== */
+
+        /* Title slide - centred, spacious */
+        .title-slide .slide-content {
+            align-items: center;
+            text-align: center;
+            gap: clamp(1rem, 3vh, 2.5rem);
+        }
+
+        .title-slide h1 {
+            font-family: var(--font-display);
+            font-size: var(--title-size);
+            font-weight: 500;
+            color: var(--red);
+            letter-spacing: 0.08em;
+            line-height: 1.15;
+        }
+
+        .title-slide .subtitle {
+            font-size: var(--h3-size);
+            color: var(--tx-secondary);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            max-width: 75%;
+        }
+
+        .title-slide .author {
+            font-size: var(--small-size);
+            color: var(--tx-muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* Section dividers - number + title */
+        .section-slide .slide-content {
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding-bottom: clamp(4rem, 12vh, 10rem);
+        }
+
+        .section-number {
+            font-size: clamp(4rem, 12vw, 10rem);
+            font-weight: 300;
+            color: var(--bg-900);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            font-family: var(--font-display);
+        }
+
+        .section-title {
+            font-size: var(--h2-size);
+            font-weight: 400;
+            color: var(--gold);
+            letter-spacing: 0.04em;
+            margin-top: clamp(0.5rem, 1vh, 1rem);
+        }
+
+        /* Content slides */
+        .content-slide .slide-content {
+            justify-content: center;
+            gap: clamp(1rem, 2.5vh, 2rem);
+            max-width: min(90vw, 900px);
+            margin: 0 auto;
+        }
+
+        .content-slide h2 {
+            font-family: var(--font-display);
+            font-size: var(--h2-size);
+            font-weight: 400;
+            color: var(--gold);
+            letter-spacing: 0.04em;
+        }
+
+        .content-slide h3 {
+            font-family: var(--font-display);
+            font-size: var(--h3-size);
+            font-weight: 400;
+            color: var(--teal);
+            letter-spacing: 0.02em;
+        }
+
+        .content-slide p {
+            font-size: var(--body-size);
+            line-height: 1.65;
+            color: var(--tx-primary);
+        }
+
+        .content-slide .muted {
+            color: var(--tx-secondary);
+        }
+
+        /* Quote slides */
+        .quote-slide .slide-content {
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            max-width: min(85vw, 800px);
+            margin: 0 auto;
+        }
+
+        blockquote {
+            border-left: 2px solid var(--teal);
+            padding-left: clamp(1rem, 2vw, 1.8rem);
+            font-family: var(--font-serif);
+            font-size: var(--quote-size);
+            line-height: 1.7;
+            color: var(--tx-primary);
+            font-style: italic;
+            opacity: 0.92;
+        }
+
+        blockquote .attribution {
+            display: block;
+            margin-top: clamp(0.5rem, 1.5vh, 1.2rem);
+            font-style: normal;
+            font-family: var(--font-display);
+            font-size: var(--small-size);
+            color: var(--tx-muted);
+            letter-spacing: 0.03em;
+        }
+
+        /* Bullet lists */
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.4rem, 1vh, 0.8rem);
+        }
+
+        .bullet-list li {
+            font-size: var(--body-size);
+            line-height: 1.5;
+            padding-left: clamp(1rem, 2vw, 1.5rem);
+            position: relative;
+        }
+
+        .bullet-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6em;
+            width: 6px;
+            height: 1px;
+            background: var(--teal);
+        }
+
+        /* Contrast/split slides */
+        .split-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(1.5rem, 4vw, 3rem);
+        }
+
+        .split-left, .split-right {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 1vh, 1rem);
+        }
+
+        .split-label {
+            font-size: var(--small-size);
+            color: var(--tx-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        /* Emphasis inline */
+        .accent-red { color: var(--red); }
+        .accent-gold { color: var(--gold); }
+        .accent-teal { color: var(--teal); }
+        .accent-teal-light { color: var(--teal-light); }
+        .dim { color: var(--tx-faint); }
+        .highlight { color: var(--tx-primary); font-weight: 500; }
+
+        /* Key term styling */
+        .term {
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        /* Horizontal rule — vault-style centred teal gradient */
+        .hr {
+            width: 40%;
+            max-width: 200px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--teal), transparent);
+            opacity: 0.4;
+            margin: 0 auto;
+        }
+
+        /* Card surface */
+        .card {
+            background: var(--bg-950);
+            border: 1px solid var(--bg-900);
+            border-radius: 4px;
+            padding: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        /* Ghost / embossed text (like vault inline-title) */
+        .ghost {
+            color: var(--bg-950);
+            font-size: clamp(6rem, 20vw, 16rem);
+            font-weight: 500;
+            position: absolute;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            font-family: var(--font-display);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide-content {
+            z-index: 1;
+        }
+
+        /* ===========================================
+           ANIMATIONS
+           Slow, subtle reveals — matching vault calm
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--duration) var(--ease-out-expo),
+                        transform var(--duration) var(--ease-out-expo);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity var(--duration) var(--ease-out-expo),
+                        transform var(--duration) var(--ease-out-expo);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity var(--duration) var(--ease-out-expo),
+                        transform var(--duration) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal,
+        .slide.visible .reveal-left,
+        .slide.visible .reveal-right {
+            opacity: 1;
+            transform: translate(0);
+        }
+
+        /* Staggered entrance */
+        .reveal:nth-child(1), .reveal-left:nth-child(1) { transition-delay: 0.1s; }
+        .reveal:nth-child(2), .reveal-right:nth-child(1) { transition-delay: 0.25s; }
+        .reveal:nth-child(3) { transition-delay: 0.4s; }
+        .reveal:nth-child(4) { transition-delay: 0.55s; }
+        .reveal:nth-child(5) { transition-delay: 0.7s; }
+
+        /* Ghost text fade */
+        .ghost {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+        .slide.visible .ghost {
+            opacity: 1;
+        }
+
+        /* ===========================================
+           NAVIGATION
+           =========================================== */
+
+        /* Progress bar — thin teal line at top */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: var(--teal);
+            z-index: 100;
+            transition: width 0.3s var(--ease-out-expo);
+        }
+
+        /* Nav dots — right side, vault teal */
+        .nav-dots {
+            position: fixed;
+            right: clamp(0.8rem, 2vw, 1.5rem);
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--bg-850);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-dot:hover {
+            background: var(--tx-muted);
+        }
+
+        .nav-dot.active {
+            background: var(--teal);
+            box-shadow: 0 0 8px rgba(58, 169, 159, 0.3);
+        }
+
+        .nav-dot.section-marker {
+            width: 8px;
+            height: 8px;
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: clamp(0.8rem, 2vh, 1.5rem);
+            right: clamp(0.8rem, 2vw, 1.5rem);
+            font-size: clamp(0.55rem, 0.8vw, 0.7rem);
+            color: var(--tx-muted);
+            letter-spacing: 0.04em;
+            opacity: 0.4;
+            z-index: 100;
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            bottom: clamp(0.8rem, 2vh, 1.5rem);
+            left: clamp(0.8rem, 2vw, 1.5rem);
+            font-size: var(--small-size);
+            color: var(--tx-muted);
+            font-family: var(--font-display);
+            letter-spacing: 0.04em;
+            opacity: 0.5;
+            z-index: 100;
+        }
+
+        /* ===========================================
+           RESPONSIVE BREAKPOINTS
+           =========================================== */
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1rem, 4vw, 3rem);
+                --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+                --title-size: clamp(1.4rem, 4.5vw, 2.8rem);
+                --h2-size: clamp(1rem, 2.5vw, 1.8rem);
+            }
+            .ghost { font-size: clamp(4rem, 15vw, 10rem); }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 3vw, 2rem);
+                --title-size: clamp(1.2rem, 4vw, 2.2rem);
+                --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+            }
+            .nav-dots, .keyboard-hint { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .split-content {
+                grid-template-columns: 1fr;
+                gap: clamp(1rem, 3vw, 2rem);
+            }
+            .nav-dots, .keyboard-hint { display: none; }
+            :root { --slide-padding: clamp(1.5rem, 5vw, 3rem); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === PROGRESS BAR === -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- === NAVIGATION DOTS === -->
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- === SLIDE COUNTER === -->
+    <div class="slide-counter" id="slideCounter"></div>
+
+    <!-- === KEYBOARD HINT === -->
+    <div class="keyboard-hint">&larr; &rarr; or scroll</div>
+
+
+    <!-- ===========================================
+         SLIDE 1: TITLE
+         =========================================== -->
+    <section class="slide title-slide" data-section="true">
+        <span class="ghost" style="top: 8%; left: -2%;">42</span>
+        <div class="slide-content">
+            <h1 class="reveal">Making Art and Philosophy with AI</h1>
+            <p class="subtitle reveal">Can Large Language Models<br>Do Philosophy?</p>
+            <div class="hr reveal"></div>
+            <p class="author reveal">Nick Young &amp; Enrico Terrone</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 2: EPIGRAPH
+         =========================================== -->
+    <section class="slide quote-slide">
+        <div class="slide-content">
+            <blockquote class="reveal">
+                "Forty-two," said Deep Thought, with infinite majesty and calm.<br><br>
+                "Is that all you've got to show for seven and a half million years' work?"<br><br>
+                "I checked it very thoroughly," said the computer, "and that quite definitely is the answer. I think the problem, to be quite honest with you, is that you've never actually known what the question is."
+                <span class="attribution">Douglas Adams, <em>The Hitchhiker's Guide to the Galaxy</em></span>
+            </blockquote>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 3: THE QUESTION
+         =========================================== -->
+    <section class="slide content-slide">
+        <span class="ghost" style="bottom: -5%; right: -3%;">?</span>
+        <div class="slide-content">
+            <h2 class="reveal">The Question</h2>
+            <p class="reveal">In 2026, humanity can actually ask machines philosophical questions. AI has had breakthroughs across domains&mdash;protein folding, quantum error correction, gluon scattering amplitudes.</p>
+            <p class="reveal">But philosophy does not have uncontroversial success conditions. What counts as a <span class="term">contribution</span> depends on what philosophy <em>is</em>.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 4: TWO CONCEPTIONS
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Two Conceptions of Philosophy</h2>
+            <div class="split-content reveal" style="transition-delay: 0.3s;">
+                <div class="split-left card">
+                    <span class="split-label accent-gold">Text-Focused</span>
+                    <p>Philosophy is located in <em>texts</em>. A contribution is a text exhibiting certain properties: coherence, explanatory power, integration.</p>
+                    <p class="muted" style="font-size: var(--small-size);">Dellsen et al. &middot; Bengson et al. &middot; Williamson</p>
+                </div>
+                <div class="split-right card">
+                    <span class="split-label accent-red">Practitioner-Focused</span>
+                    <p>Philosophy is located in the <em>practitioner</em>. It requires self-transformation, therapy, or phenomenological observation.</p>
+                    <p class="muted" style="font-size: var(--small-size);">Hadot &middot; Wittgenstein &middot; Merleau-Ponty</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 5: THIS PAPER
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">This Paper&rsquo;s Framework</h2>
+            <p class="reveal">If philosophical evaluation concerns properties of texts&mdash;coherence, handling of objections, illumination of subject matter&mdash;then whether LLMs can do philosophy is a question about the <span class="term">texts they produce</span>.</p>
+            <div class="hr reveal"></div>
+            <p class="reveal muted">I argue LLMs can produce philosophy exhibiting the relevant properties.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 6: SECTION 1 DIVIDER
+         =========================================== -->
+    <section class="slide section-slide" data-section="true">
+        <div class="slide-content">
+            <span class="section-number reveal">1</span>
+            <h2 class="section-title reveal">Philosophy in the Text</h2>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 7: WATSON & CRICK VS QUINE
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Discovery vs. Argument</h2>
+            <div class="split-content reveal" style="transition-delay: 0.3s;">
+                <div class="split-left">
+                    <span class="split-label accent-teal">Watson &amp; Crick (1953)</span>
+                    <p>Reported a finding. The double helix existed before they described it. A different scientist would have found the <em>same thing</em>.</p>
+                </div>
+                <div class="split-right">
+                    <span class="split-label accent-teal">Quine (1951)</span>
+                    <p>Made arguments. There is no prior reality the paper reports. A different philosopher reaching the same conclusions would have had to <em>make arguments</em>.</p>
+                </div>
+            </div>
+            <p class="reveal muted" style="margin-top: auto; font-size: var(--small-size);">If the arguments differed, so would the contribution.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 8: LIKELINESS VS LOVELINESS
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Likeliness &amp; Loveliness</h2>
+            <p class="reveal">Lipton distinguishes the <span class="accent-gold">likeliest</span> explanation (most probable) from the <span class="accent-teal">loveliest</span> (deepest understanding if true).</p>
+            <p class="reveal">We can assess <em>loveliness</em> independently of whether an explanation is correct. Philosophical evaluation has this character: we assess arguments for properties judgeable from the arguments themselves.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 9: WHAT WE EVALUATE
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">What We Evaluate</h2>
+            <ul class="bullet-list reveal" style="transition-delay: 0.3s;">
+                <li><span class="highlight">Elegance and unity</span>&mdash;a good theory explains much with little</li>
+                <li><span class="highlight">Non-ad-hocness</span>&mdash;parts hang together, not gerrymandered to cases</li>
+                <li><span class="highlight">Handling of objections</span>&mdash;distinctions drawn at the right places</li>
+                <li><span class="highlight">Illumination</span>&mdash;does it deepen understanding of the subject matter?</li>
+            </ul>
+            <p class="reveal muted" style="font-size: var(--small-size); margin-top: auto;">Blind review operationalises this: referees assess arguments without knowing who wrote them.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 10: THE KEY MOVE
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <blockquote class="reveal">
+                Deep Blue plays good chess. Its moves respond effectively to threats, secure positional advantages, and contribute to coherent strategic plans. But Deep Blue does not play creatively. A move is good chess or it is not, regardless of whether it was found by creative insight or brute computation.
+            </blockquote>
+            <div class="hr reveal"></div>
+            <p class="reveal">If evaluation concerns <span class="term">properties of arguments</span>, the production process is not evaluatively relevant.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 11: SECTION 2 DIVIDER
+         =========================================== -->
+    <section class="slide section-slide" data-section="true">
+        <div class="slide-content">
+            <span class="section-number reveal">2</span>
+            <h2 class="section-title reveal">LLMs and Abduction</h2>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 12: ZEROTH-ORDER ABDUCTION
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Zeroth-Order Abduction</h2>
+            <h3 class="reveal">Floridi, Nobre &amp; Taddeo (2024)</h3>
+            <p class="reveal">LLMs generate plausible continuations based on learned associations. They do not <em>compare hypotheses</em> and select the best. Floridi et al. call this <span class="term">zeroth-order abduction</span>&mdash;the absence of genuine comparative evaluation.</p>
+            <blockquote class="reveal" style="margin-top: auto; font-size: var(--small-size);">
+                "The model does not understand what an explanation is, but it produces text that follows the typical phrasing and structure of explanations."
+                <span class="attribution">Floridi, Nobre &amp; Taddeo</span>
+            </blockquote>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 13: ZAHAVY'S OBJECTION
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Manipulative Abduction</h2>
+            <h3 class="reveal">Zahavy (2026)</h3>
+            <p class="reveal">Einstein imagined himself inside a falling elevator. He simulated the <em>sensations</em>&mdash;objects hovering, the floor rushing up&mdash;and abduced that gravity and acceleration must be the same phenomenon.</p>
+            <p class="reveal">LLMs operate entirely in symbols&mdash;<span class="accent-red">"high-dimensional Chinese Rooms."</span> But the argument extends beyond physics: if LLMs lack subjective experience altogether, then philosophy relying on <span class="term">phenomenological observation</span>, <span class="term">intuitions</span> (Machery 2017), or <span class="term">aesthetic experience</span> is also at risk.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 14: SECTION 3 DIVIDER
+         =========================================== -->
+    <section class="slide section-slide" data-section="true">
+        <div class="slide-content">
+            <span class="section-number reveal">3</span>
+            <h2 class="section-title reveal">Thought Experiments &amp;<br>Armchair Abduction</h2>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 15: WILLIAMSON'S FRAMEWORK
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Armchair Abduction</h2>
+            <h3 class="reveal">Williamson (2024)</h3>
+            <blockquote class="reveal">
+                "It should be elegant and unified, not arbitrary, gerrymandered, ad hoc, or messily complicated. It should be informative and general. In brief, it should combine simplicity with strength."
+                <span class="attribution">Williamson 2024, p. 354</span>
+            </blockquote>
+            <p class="reveal">The evidence for philosophical abduction is the <span class="term">accumulated textual record</span> of the discipline. Mathematics is precedent: a successful armchair discipline where abduction operates.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 16: THE CORPUS ARGUMENT
+         =========================================== -->
+    <section class="slide content-slide">
+        <span class="ghost" style="top: 5%; right: -5%; opacity: 0.6;">P</span>
+        <div class="slide-content">
+            <h2 class="reveal">The Corpus Argument</h2>
+            <p class="reveal">The philosophical corpus has been filtered by <em>peer review</em>&mdash;a process that selects for exactly the intrinsic virtues Williamson identifies.</p>
+            <p class="reveal">An LLM trained on this corpus has learned <span class="term">the distribution</span>. What counts as "plausible" in philosophy is what scores well on Williamson's virtues; and what scores well is what the corpus encodes.</p>
+            <div class="hr reveal"></div>
+            <p class="reveal muted" style="font-size: var(--small-size);">Floridi et al.'s diagnosis&mdash;that LLMs produce plausible outputs&mdash;is mechanistically correct. But philosophical plausibility <em>is</em> philosophical quality.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 17: TWIN EARTH
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Twin Earth Is a Text</h2>
+            <p class="reveal">Putnam's Twin Earth, Jackson's Mary, Searle's Chinese Room, Parfit's teleporter&mdash;every major philosophical thought experiment is articulated in language, recorded in text, and does its work at the level of <span class="term">concepts and propositions</span>.</p>
+            <p class="reveal">They do not require embodied simulation. Whatever private experiences philosophers have in arriving at them, the thought experiments themselves are <span class="accent-teal">linguistic objects</span>.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 18: DESCRIPTIONS, NOT EXPERIENCE
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Descriptions, Not Experience</h2>
+            <p class="reveal">We do not claim LLMs have phenomenological experience, intuitions, or aesthetic response. What they have is a training corpus containing extensive <span class="term">descriptions of human experience</span>.</p>
+            <p class="reveal">This is not first-hand access to experience but access to descriptions&mdash;and descriptions of experience are what philosophical argument typically works with.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 19: CONCEPTUAL INNOVATION
+         =========================================== -->
+    <section class="slide content-slide">
+        <div class="slide-content">
+            <h2 class="reveal">Conceptual Innovation</h2>
+            <p class="reveal">Philosophical novelty consists in new ways of carving the problem-space:</p>
+            <ul class="bullet-list reveal" style="transition-delay: 0.3s;">
+                <li><span class="accent-gold">Dummett</span>&mdash;assertoric content vs. ingredient sense</li>
+                <li><span class="accent-gold">Kripke</span>&mdash;rigid designators reconfigure reference, identity, modality</li>
+                <li><span class="accent-gold">Lewis</span>&mdash;modal realism takes possible-world semantics literally</li>
+            </ul>
+            <p class="reveal muted">These are <em>conceptual</em> innovations&mdash;not leaps from bodily sensation to formal axioms. An LLM trained on the materials and the standards has the resources to produce similar reconfigurations.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 19: LIPTON'S LEVELS
+         =========================================== -->
+    <section class="slide quote-slide">
+        <div class="slide-content">
+            <blockquote class="reveal">
+                "Arguing that Inference to the Best Explanation is wrong because Bayesianism is right is like arguing that thinking about technique cannot help my squash game because the motion of the ball is governed by the laws of mechanics."
+                <span class="attribution">Lipton 2004, p. 108</span>
+            </blockquote>
+            <div class="hr reveal"></div>
+            <p class="reveal" style="font-size: var(--body-size); text-align: center; color: var(--tx-secondary);">The stochastic description of the LLM does not settle whether its outputs meet philosophical standards.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         SLIDE 20: CONCLUSION
+         =========================================== -->
+    <section class="slide title-slide" data-section="true">
+        <span class="ghost" style="bottom: -8%; left: -5%;">&#8756;</span>
+        <div class="slide-content">
+            <h1 class="reveal" style="font-size: var(--h2-size);">Conclusion</h1>
+            <p class="subtitle reveal" style="max-width: 80%;">If philosophical evaluation concerns properties of arguments&mdash;and these properties are assessable by reading them&mdash;then the production process is not evaluatively relevant.</p>
+            <div class="hr reveal"></div>
+            <p class="reveal" style="font-size: var(--body-size); color: var(--tx-secondary); max-width: 70%;">The question is whether a text exhibits these properties, not what brought it into existence.</p>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+       JAVASCRIPT: PRESENTATION CONTROLLER
+       Keyboard nav, scroll tracking, animations
+       =========================================== -->
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.currentSlide = 0;
+                this.isAnimating = false;
+                this.totalSlides = this.slides.length;
+
+                this.createNavDots();
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupScrollTracking();
+                this.setupTouchNav();
+                this.updateCounter();
+            }
+
+            /* --- Nav dots --- */
+            createNavDots() {
+                const nav = document.getElementById('navDots');
+                this.slides.forEach((slide, i) => {
+                    const dot = document.createElement('button');
+                    dot.classList.add('nav-dot');
+                    if (slide.dataset.section) dot.classList.add('section-marker');
+                    dot.setAttribute('aria-label', `Slide ${i + 1}`);
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    nav.appendChild(dot);
+                });
+                this.dots = nav.querySelectorAll('.nav-dot');
+                this.updateDots();
+            }
+
+            updateDots() {
+                this.dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentSlide);
+                });
+            }
+
+            /* --- Intersection Observer for animations --- */
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const idx = Array.from(this.slides).indexOf(entry.target);
+                            if (idx !== -1) {
+                                this.currentSlide = idx;
+                                this.updateDots();
+                                this.updateProgress();
+                                this.updateCounter();
+                            }
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            /* --- Keyboard navigation --- */
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    } else if (e.key === 'Home') {
+                        e.preventDefault();
+                        this.goToSlide(0);
+                    } else if (e.key === 'End') {
+                        e.preventDefault();
+                        this.goToSlide(this.totalSlides - 1);
+                    }
+                });
+            }
+
+            /* --- Scroll tracking for progress bar --- */
+            setupScrollTracking() {
+                window.addEventListener('scroll', () => {
+                    this.updateProgress();
+                }, { passive: true });
+            }
+
+            /* --- Touch/swipe support --- */
+            setupTouchNav() {
+                let startY = 0;
+                let startX = 0;
+
+                document.addEventListener('touchstart', (e) => {
+                    startY = e.touches[0].clientY;
+                    startX = e.touches[0].clientX;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    const diffY = startY - e.changedTouches[0].clientY;
+                    const diffX = startX - e.changedTouches[0].clientX;
+                    const threshold = 50;
+
+                    if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > threshold) {
+                        if (diffY > 0) this.nextSlide();
+                        else this.prevSlide();
+                    }
+                }, { passive: true });
+            }
+
+            /* --- Navigation methods --- */
+            nextSlide() {
+                if (this.currentSlide < this.totalSlides - 1) {
+                    this.goToSlide(this.currentSlide + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentSlide > 0) {
+                    this.goToSlide(this.currentSlide - 1);
+                }
+            }
+
+            goToSlide(index) {
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                this.currentSlide = index;
+                this.updateDots();
+                this.updateCounter();
+            }
+
+            /* --- Progress bar --- */
+            updateProgress() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                document.getElementById('progressBar').style.width = progress + '%';
+            }
+
+            /* --- Slide counter --- */
+            updateCounter() {
+                document.getElementById('slideCounter').textContent =
+                    `${this.currentSlide + 1} / ${this.totalSlides}`;
+            }
+        }
+
+        /* Initialize on load */
+        document.addEventListener('DOMContentLoaded', () => {
+            new SlidePresentation();
+        });
+    </script>
+
+</body>
+</html>
